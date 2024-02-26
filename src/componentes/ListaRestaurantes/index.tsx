@@ -9,7 +9,7 @@ const ListaRestaurantes = () => {
   const apiUrl = 'http://localhost:8000/api/v1/restaurantes/';
 
   const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([]);
-  const [proximaPagina, setProximaPagina] = useState('');
+  const [apiUrlProximaPagina, setApiUrlProximaPagina] = useState('');
 
   useEffect(() => {
     // obter restaurantes
@@ -17,17 +17,17 @@ const ListaRestaurantes = () => {
       .get<IPaginacao<IRestaurante>>(apiUrl)
       .then((response) => {
         setRestaurantes(response.data.results);
-        setProximaPagina(response.data.next);
+        setApiUrlProximaPagina(response.data.next);
       })
       .catch((error) => console.error(error));
   }, []);
 
   const verMais = () => {
     axios
-      .get<IPaginacao<IRestaurante>>(apiUrl)
+      .get<IPaginacao<IRestaurante>>(apiUrlProximaPagina)
       .then((response) => {
         setRestaurantes([...restaurantes, ...response.data.results]);
-        setProximaPagina(response.data.next);
+        setApiUrlProximaPagina(response.data.next);
       })
       .catch((error) => console.error(error));
   };
@@ -40,7 +40,7 @@ const ListaRestaurantes = () => {
       {restaurantes?.map((item) => (
         <Restaurante restaurante={item} key={item.id} />
       ))}
-      {proximaPagina && <button onClick={verMais}>ver mais</button>}
+      {apiUrlProximaPagina && <button onClick={verMais}>ver mais</button>}
     </section>
   );
 };
