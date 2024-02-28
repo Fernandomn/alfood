@@ -1,12 +1,18 @@
 import { Button, TextField } from '@mui/material';
+import axios from 'axios';
 import { useState } from 'react';
 
 const FormularioRestaurante = () => {
+  const apiUrl = 'http://localhost:8000/api/v2/restaurantes/';
   const [nomeRestaurante, setNomeRestaurante] = useState('');
 
   const aoSubmeterForm = (evento: React.FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
-    console.log('preciso enviar dados para API');
+
+    axios.post(apiUrl, { nome: nomeRestaurante }).then((result) => {
+      alert(`restaurante cadastrado com sucesso`);
+      console.log(result);
+    });
   };
 
   return (
