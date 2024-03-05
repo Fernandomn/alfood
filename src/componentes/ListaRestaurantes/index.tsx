@@ -9,6 +9,7 @@ import Restaurante from './Restaurante';
 const ListaRestaurantes = () => {
   const [data, setData] = useState<IPaginacao<IRestaurante>>();
   const [textoDeBusca, setTextoDeBusca] = useState('');
+  const [ordenacao, setOrdenacao] = useState('');
 
   const progressivePaginationFlag = true;
   const apiUrl = 'http://localhost:8000/api/v1/restaurantes/';
@@ -47,6 +48,9 @@ const ListaRestaurantes = () => {
     if (textoDeBusca) {
       options.params.search = textoDeBusca;
     }
+    if (ordenacao) {
+      options.params.ordering = ordenacao;
+    }
 
     carregarDados(apiUrl, options);
   }
@@ -58,15 +62,32 @@ const ListaRestaurantes = () => {
       </h1>
 
       <form onSubmit={buscar}>
-        <label htmlFor="busca-restaurantes">Buscar restaurantes</label>
-        <input
-          id="busca-restaurantes"
-          name="busca-restaurantes"
-          placeholder="Busque por restaurantes"
-          type="text"
-          value={textoDeBusca}
-          onChange={(event) => setTextoDeBusca(event.target.value)}
-        />
+        <div>
+          <label htmlFor="busca-restaurantes">Buscar restaurantes</label>
+          <input
+            id="busca-restaurantes"
+            name="busca-restaurantes"
+            placeholder="Busque por restaurantes"
+            type="text"
+            value={textoDeBusca}
+            onChange={(event) => setTextoDeBusca(event.target.value)}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="selectOrdenacao">Ordenação</label>
+          <select
+            name="select-ordenacao"
+            id="select-ordenacao"
+            value={ordenacao}
+            onChange={(event) => setOrdenacao(event.target.value)}
+          >
+            <option value="">Padrão</option>
+            <option value="id">Por ID</option>
+            <option value="nome">Por Nome</option>
+          </select>
+        </div>
+
         <button type="submit">Pesquisar</button>
       </form>
 
