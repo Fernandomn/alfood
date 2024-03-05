@@ -1,12 +1,14 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import axios, { AxiosRequestConfig } from 'axios';
+import { FormEvent, useEffect, useState } from 'react';
 import { IPaginacao } from '../../interfaces/IPaginacao';
+import IParametrosBusca from '../../interfaces/IParametrosBusca';
 import IRestaurante from '../../interfaces/IRestaurante';
 import style from './ListaRestaurantes.module.scss';
 import Restaurante from './Restaurante';
 
 const ListaRestaurantes = () => {
   const [data, setData] = useState<IPaginacao<IRestaurante>>();
+  const [textoDeBusca, setTextoDeBusca] = useState('');
 
   const progressivePaginationFlag = true;
   const apiUrl = 'http://localhost:8000/api/v1/restaurantes/';
@@ -18,9 +20,9 @@ const ListaRestaurantes = () => {
     carregarDados(apiUrl);
   }, []);
 
-  const carregarDados = (url: string) => {
+  const carregarDados = (url: string, options: AxiosRequestConfig = {}) => {
     axios
-      .get<IPaginacao<IRestaurante>>(url)
+      .get<IPaginacao<IRestaurante>>(url, options)
       .then((response) => {
         setData(response.data);
       })
@@ -38,17 +40,44 @@ const ListaRestaurantes = () => {
       .catch((error) => console.error(error));
   };
 
+  function buscar(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+
+    const options = { params: {} as IParametrosBusca };
+    if (textoDeBusca) {
+      options.params.search = textoDeBusca;
+    }
+
+    carregarDados(apiUrl, options);
+  }
+
   return (
     <section className={style.ListaRestaurantes}>
       <h1>
         Os restaurantes mais <em>bacanas</em>!
       </h1>
+
+      <form onSubmit={buscar}>
+        <label htmlFor="busca-restaurantes">Buscar restaurantes</label>
+        <input
+          id="busca-restaurantes"
+          name="busca-restaurantes"
+          placeholder="Busque por restaurantes"
+          type="text"
+          value={textoDeBusca}
+          onChange={(event) => setTextoDeBusca(event.target.value)}
+        />
+        <button type="submit">Pesquisar</button>
+      </form>
+
       {listaRestaurantes?.map((item) => (
         <Restaurante restaurante={item} key={item.id} />
       ))}
+
       {progressivePaginationFlag && apiUrlProximaPagina && (
         <button onClick={verMais}>ver mais</button>
       )}
+
       {!progressivePaginationFlag && (
         <>
           {
