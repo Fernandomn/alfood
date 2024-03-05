@@ -1,30 +1,31 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import http from '../../../http';
 import IRestaurante from '../../../interfaces/IRestaurante';
 
 const FormularioRestaurante = () => {
+  const apiUrl = 'restaurantes/';
+
   const parametros = useParams();
   const [nomeRestaurante, setNomeRestaurante] = useState('');
 
   useEffect(() => {
     if (parametros?.id) {
       const restauranteUrl: string = `${apiUrl}${parametros.id}/`;
-      axios
+      http
         .get<IRestaurante>(restauranteUrl)
         .then((result) => setNomeRestaurante(result.data.nome))
         .catch();
     }
   }, [parametros]);
 
-  const apiUrl = 'http://localhost:8000/api/v2/restaurantes/';
   const aoSubmeterForm = (evento: React.FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
 
     if (parametros?.id) {
       const editUrl: string = `${apiUrl}${parametros.id}/`;
-      axios
+      http
         .put(editUrl, { nome: nomeRestaurante })
         .then((result) => {
           alert('restaurante cadastrado com sucesso');
@@ -32,7 +33,7 @@ const FormularioRestaurante = () => {
         })
         .catch((error) => console.error(error));
     } else {
-      axios
+      http
         .post(apiUrl, { nome: nomeRestaurante })
         .then((result) => {
           alert(`restaurante cadastrado com sucesso`);

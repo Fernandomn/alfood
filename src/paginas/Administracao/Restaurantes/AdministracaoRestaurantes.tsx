@@ -8,17 +8,17 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import http from '../../../http';
 import IRestaurante from '../../../interfaces/IRestaurante';
 
 const AdministracaoRestaurantes = () => {
   const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([]);
-  const apiUrl = 'http://localhost:8000/api/v2/restaurantes/';
+  const apiUrl = '/restaurantes/';
 
   useEffect(() => {
-    axios
+    http
       .get<IRestaurante[]>(apiUrl)
       .then((result) => {
         setRestaurantes(result.data);
@@ -28,7 +28,7 @@ const AdministracaoRestaurantes = () => {
 
   const excluir = (restauranteASerExcluido: IRestaurante): void => {
     const deleteUrl = `${apiUrl}${restauranteASerExcluido.id}/`;
-    axios
+    http
       .delete(deleteUrl)
       .then((result) => {
         const listaRestaurantes = restaurantes.filter(
