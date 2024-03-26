@@ -28,7 +28,7 @@ const FormularioRestaurante = () => {
       http
         .put(editUrl, { nome: nomeRestaurante })
         .then((result) => {
-          alert('restaurante cadastrado com sucesso');
+          alert('restaurante atualizado com sucesso!');
           console.log(result);
         })
         .catch((error) => console.error(error));
@@ -36,7 +36,7 @@ const FormularioRestaurante = () => {
       http
         .post(apiUrl, { nome: nomeRestaurante })
         .then((result) => {
-          alert(`restaurante cadastrado com sucesso`);
+          alert(`restaurante cadastrado com sucesso!`);
           console.log(result);
         })
         .catch((error) => console.error(error));

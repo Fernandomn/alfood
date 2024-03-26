@@ -35,6 +35,7 @@ const FormularioPrato = () => {
   const descricao = data?.descricao || '';
   const tag = data?.tag || '';
   const restaurante = data?.restaurante || 0;
+  const isEditing = data && data.id > 0;
 
   useEffect(() => {
     http
@@ -99,16 +100,19 @@ const FormularioPrato = () => {
       formData.append('imagem', imagem);
     }
 
+    const method = isEditing ? 'PUT' : 'POST';
+
     http
       .request({
-        url: apiPratosUrl,
-        method: 'POST',
+        url: `${apiPratosUrl}${isEditing ? data.id + '/' : ''}`,
+        method: method,
         headers: { 'Content-Type': 'multipart/form-data' },
         data: formData,
       })
       .then((response) => {
         console.log(response);
-        alert('prato cadastrado com sucesso!');
+
+        alert(`prato ${isEditing ? 'atualizado' : 'cadastrado'} com sucesso!`);
         setData({} as IPrato);
       })
       .catch((error) => console.error(error));
